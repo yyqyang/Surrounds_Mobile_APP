@@ -1,15 +1,15 @@
 package com.example.satenderkumar.chatapp.Fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.satenderkumar.chatapp.R;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private RecyclerView recyclerView;
+
     private PostAdapter postAdapter;
     private List<Post> postList;
 
@@ -42,21 +42,19 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(mLayoutManager);
+
         postList = new ArrayList<>();
         postAdapter = new PostAdapter(getContext(), postList);
-        recyclerView.setAdapter(postAdapter);
 
-        recyclerView_story = view.findViewById(R.id.recycler_view_story);
-        recyclerView_story.setHasFixedSize(true);
+
+
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false);
-        recyclerView_story.setLayoutManager(linearLayoutManager);
+
 
 
         progress_circular = view.findViewById(R.id.progress_circular);
