@@ -30,8 +30,6 @@
         <activity android:name=".OptionsActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".FollowersActivity" />
-        <activity android:name=".StoryActivity" />
-        <activity android:name=".AddStoryActivity" />
         <activity android:name=".CommentActivity" />
     </application>
 

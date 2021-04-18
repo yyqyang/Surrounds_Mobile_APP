@@ -1,7 +1,5 @@
 package com.example.satenderkumar.chatapp.Fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,13 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.satenderkumar.chatapp.R;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,10 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.example.satenderkumar.chatapp.Adapter.PostAdapter;
-import com.example.satenderkumar.chatapp.Adapter.StoryAdapter;
 import com.example.satenderkumar.chatapp.Model.Post;
-import com.example.satenderkumar.chatapp.Model.Story;
-import com.example.satenderkumar.chatapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +31,7 @@ public class HomeFragment extends Fragment {
     private List<Post> postList;
 
     private RecyclerView recyclerView_story;
-    private StoryAdapter storyAdapter;
-    private List<Story> storyList;
+
 
     private List<String> followingList;
 
@@ -67,9 +57,7 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false);
         recyclerView_story.setLayoutManager(linearLayoutManager);
-        storyList = new ArrayList<>();
-        storyAdapter = new StoryAdapter(getContext(), storyList);
-        recyclerView_story.setAdapter(storyAdapter);
+
 
         progress_circular = view.findViewById(R.id.progress_circular);
 
@@ -93,7 +81,7 @@ public class HomeFragment extends Fragment {
                 }
 
                 readPosts();
-                readStory();
+
             }
 
             @Override
@@ -130,37 +118,6 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void readStory(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Story");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                long timecurrent = System.currentTimeMillis();
-                storyList.clear();
-                storyList.add(new Story("", 0, 0, "",
-                        FirebaseAuth.getInstance().getCurrentUser().getUid()));
-                for (String id : followingList) {
-                    int countStory = 0;
-                    Story story = null;
-                    for (DataSnapshot snapshot : dataSnapshot.child(id).getChildren()) {
-                        story = snapshot.getValue(Story.class);
-                        if (timecurrent > story.getTimestart() && timecurrent < story.getTimeend()) {
-                            countStory++;
-                        }
-                    }
-                    if (countStory > 0){
-                        storyList.add(story);
-                    }
-                }
 
-                storyAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 }
 
