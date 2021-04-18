@@ -9,10 +9,12 @@
     android:gravity="center"
     tools:context=".LoginActivity">
 
-    <ImageView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/logo"/>
+        android:src="@drawable/logo"
+        android:text="@string/app_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
     <EditText
         android:layout_width="match_parent"
