@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -62,12 +64,13 @@ import com.example.satenderkumar.chatapp.R;
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
-    //private HomeViewModel homeViewModel;
 
     public GoogleMap map;
     FusedLocationProviderClient mFusedLocationClient;
     protected Context context;
     int PERMISSION_ID = 44;
+    Marker marker;
+
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -81,6 +84,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         MapView mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
 
 //        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
 //            @Override
