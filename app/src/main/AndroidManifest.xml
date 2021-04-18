@@ -45,11 +45,14 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".CommentsActivity" />
+
+
+        <activity android:name=".CommentsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".OptionsActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".FollowersActivity" />
-        <activity android:name=".CommentActivity" />
+
     </application>
 
 </manifest>
