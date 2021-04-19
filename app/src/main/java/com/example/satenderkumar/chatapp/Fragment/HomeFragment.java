@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,7 +26,7 @@ import com.example.satenderkumar.chatapp.Model.Post;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
 
 
 import android.Manifest;
@@ -78,20 +79,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
-        // homeViewModel =
-        //new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         MapView mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-
-//        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
         return root;
 
 
@@ -102,7 +94,49 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         map = googleMap;
 
         getLastLocation();
+        getAllLocation();
 
+    }
+
+    private void getAllLocation(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+        reference.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //Get map of users in datasnapshot
+                        collectLocation((Map<String,Object>) dataSnapshot.getValue());
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        //handle databaseError
+                    }
+                });
+
+
+
+    }
+
+    private void collectLocation(Map<String,Object> posts) {
+
+
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : posts.entrySet()){
+
+            //Get user map
+            Map postdetails = (Map) entry.getValue();
+            Map location = (Map)postdetails.get("location");
+            //Get phone field and append to list
+            //location_all.add((Long) singleUser.get("latitude"));
+        if (location!=null){
+            LatLng Here = new LatLng((double)location.get("latitude"), (double)location.get("longitude"));
+            map.addMarker(new MarkerOptions().position(Here).title("Post nearby")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+            );
+        }
+        }
     }
 
     @SuppressLint("MissingPermission")
