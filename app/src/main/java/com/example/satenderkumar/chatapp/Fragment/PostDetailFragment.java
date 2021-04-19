@@ -1,5 +1,6 @@
 package com.example.satenderkumar.chatapp.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.example.satenderkumar.chatapp.R;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +31,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class PostDetailFragment extends Fragment {
 
     String postid;
-
+    String postid_intent;
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
     private List<Post> postList;
@@ -42,6 +44,8 @@ public class PostDetailFragment extends Fragment {
         SharedPreferences prefs = getContext().getSharedPreferences("PREFS", MODE_PRIVATE);
         postid = prefs.getString("postid", "none");
 
+
+
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -50,7 +54,10 @@ public class PostDetailFragment extends Fragment {
         postList = new ArrayList<>();
         postAdapter = new PostAdapter(getContext(), postList);
         recyclerView.setAdapter(postAdapter);
-
+        //Bundle extras = getActivity().getIntent().getExtras();
+        //String value = extras.getString("postid");
+        //postid = extras.getString("postid", "none");
+        //Toast.makeText(getActivity(),  postid, Toast.LENGTH_SHORT).show();
         readPost();
 
         return view;

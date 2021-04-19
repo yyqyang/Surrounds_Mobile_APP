@@ -208,6 +208,8 @@ public class PostActivity extends AppCompatActivity  {
                         } else {
                             LatLng Here = new LatLng(location.getLatitude(), location.getLongitude());
                             reference.child(postid).child("location").setValue(Here);
+                            reference.child(postid).child("location").child("postid").setValue(postid);
+
                         }
                     }
                 });

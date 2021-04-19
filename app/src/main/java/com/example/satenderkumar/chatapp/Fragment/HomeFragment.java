@@ -2,16 +2,21 @@ package com.example.satenderkumar.chatapp.Fragment;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.satenderkumar.chatapp.Post_detail_intent;
 import com.example.satenderkumar.chatapp.R;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.widget.ProgressBar;
 
+import com.example.satenderkumar.chatapp.RegisterActivity;
+import com.google.android.gms.flags.impl.DataUtils;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
@@ -25,6 +30,7 @@ import com.example.satenderkumar.chatapp.Adapter.PostAdapter;
 import com.example.satenderkumar.chatapp.Model.Post;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +69,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.example.satenderkumar.chatapp.R;
 
+
+
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
+
 
 
     public GoogleMap map;
@@ -72,6 +81,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     int PERMISSION_ID = 44;
     Marker marker;
 
+    Map postdetails;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -83,6 +93,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         MapView mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
 
         return root;
 
@@ -96,10 +107,30 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         getLastLocation();
         getAllLocation();
 
+
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean  onMarkerClick( Marker marker) {
+
+                    String postid = (String)(marker.getTag());
+                    if(postid!=null){
+                        Intent intent = new Intent(getActivity(), Post_detail_intent.class);
+                        intent.putExtra("postid", postid);
+                        startActivity(intent);
+
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+
     }
 
     private void getAllLocation(){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+
         reference.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -108,7 +139,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         collectLocation((Map<String,Object>) dataSnapshot.getValue());
 
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         //handle databaseError
@@ -130,12 +160,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             Map location = (Map)postdetails.get("location");
             //Get phone field and append to list
             //location_all.add((Long) singleUser.get("latitude"));
-        if (location!=null){
-            LatLng Here = new LatLng((double)location.get("latitude"), (double)location.get("longitude"));
-            map.addMarker(new MarkerOptions().position(Here).title("Post nearby")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-            );
-        }
+            if (location!=null){
+                LatLng Here = new LatLng((double)location.get("latitude"), (double)location.get("longitude"));
+                Marker marker = map.addMarker(new MarkerOptions().position(Here).title("Post nearby")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                marker.setTag(location.get("postid"));
+
+            }
         }
     }
 
@@ -248,6 +279,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             getLastLocation();
         }
     }
+
+
+
 
 
 

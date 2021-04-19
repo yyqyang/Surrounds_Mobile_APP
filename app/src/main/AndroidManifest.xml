@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.satenderkumar.chatapp">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -42,17 +41,16 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".PostActivity" />
+        <activity android:name=".Post_detail_intent" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-
-
-        <activity android:name=".CommentsActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".CommentsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".OptionsActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".FollowersActivity" />
-
     </application>
 
 </manifest>
