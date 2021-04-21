@@ -1,5 +1,6 @@
 package com.example.satenderkumar.chatapp.Fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import com.example.satenderkumar.chatapp.Post_detail_intent;
 import com.example.satenderkumar.chatapp.R;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.widget.ProgressBar;
@@ -69,6 +71,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.example.satenderkumar.chatapp.R;
 
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
@@ -114,10 +117,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                     String postid = (String)(marker.getTag());
                     if(postid!=null){
-                        Intent intent = new Intent(getActivity(), Post_detail_intent.class);
-                        intent.putExtra("postid", postid);
-                        startActivity(intent);
+                        SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+                        editor.putString("postid", postid);
+                        editor.apply();
 
+                        ((FragmentActivity)getContext()).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                new PostDetailFragment()).commit();
                     return true;
                 }
 
