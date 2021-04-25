@@ -1,21 +1,21 @@
 package com.example.satenderkumar.chatapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import android.content.Intent;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
+import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.satenderkumar.chatapp.Adapter.UserAdapter;
+import com.example.satenderkumar.chatapp.Model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.example.satenderkumar.chatapp.Adapter.UserAdapter;
-import com.example.satenderkumar.chatapp.Model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +24,7 @@ public class FollowersActivity extends AppCompatActivity {
 
     String id;
     String title;
-
     private List<String> idList;
-
     RecyclerView recyclerView;
     UserAdapter userAdapter;
     List<User> userList;
@@ -59,7 +57,6 @@ public class FollowersActivity extends AppCompatActivity {
         recyclerView.setAdapter(userAdapter);
 
         idList = new ArrayList<>();
-
 
         switch (title) {
             case "likes":

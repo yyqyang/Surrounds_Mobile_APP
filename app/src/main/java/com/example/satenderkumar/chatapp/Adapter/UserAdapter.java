@@ -3,16 +3,21 @@ package com.example.satenderkumar.chatapp.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.example.satenderkumar.chatapp.Fragment.ProfileFragment;
+import com.example.satenderkumar.chatapp.MainActivity;
+import com.example.satenderkumar.chatapp.Model.User;
+import com.example.satenderkumar.chatapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -20,10 +25,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.example.satenderkumar.chatapp.Fragment.ProfileFragment;
-import com.example.satenderkumar.chatapp.MainActivity;
-import com.example.satenderkumar.chatapp.Model.User;
-import com.example.satenderkumar.chatapp.R;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,13 +35,13 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolder> {
 
-    private Context mContext;
-    private List<User> mUsers;
-    private boolean isFragment;
+    private final Context mContext;
+    private final List<User> mUsers;
+    private final boolean isFragment;
 
     private FirebaseUser firebaseUser;
 
-    public UserAdapter(Context context, List<User> users, boolean isFragment){
+    public UserAdapter(Context context, List<User> users, boolean isFragment) {
         mContext = context;
         mUsers = users;
         this.isFragment = isFragment;
@@ -67,7 +68,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         holder.fullname.setText(user.getFullname());
         Glide.with(mContext).load(user.getImageurl()).into(holder.image_profile);
 
-        if (user.getId().equals(firebaseUser.getUid())){
+        if (user.getId().equals(firebaseUser.getUid())) {
             holder.btn_follow.setVisibility(View.GONE);
         }
 
@@ -110,7 +111,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         });
     }
 
-    private void addNotification(String userid){
+    private void addNotification(String userid) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Notifications").child(userid);
 
         HashMap<String, Object> hashMap = new HashMap<>();
@@ -125,6 +126,29 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
     @Override
     public int getItemCount() {
         return mUsers.size();
+    }
+
+    private void isFollowing(final String userid, final Button button) {
+
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                .child("Follow").child(firebaseUser.getUid()).child("following");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(userid).exists()) {
+                    button.setText("following");
+                } else {
+                    button.setText("follow");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {
@@ -142,28 +166,5 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
             image_profile = itemView.findViewById(R.id.image_profile);
             btn_follow = itemView.findViewById(R.id.btn_follow);
         }
-    }
-
-    private void isFollowing(final String userid, final Button button){
-
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("Follow").child(firebaseUser.getUid()).child("following");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(userid).exists()){
-                    button.setText("following");
-                } else{
-                    button.setText("follow");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 }

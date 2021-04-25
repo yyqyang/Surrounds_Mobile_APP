@@ -1,26 +1,23 @@
 package com.example.satenderkumar.chatapp.Fragment;
 
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.satenderkumar.chatapp.R;
-import android.content.SharedPreferences;
-import android.widget.Toast;
-
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.satenderkumar.chatapp.Adapter.PostAdapter;
+import com.example.satenderkumar.chatapp.Model.Post;
+import com.example.satenderkumar.chatapp.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.example.satenderkumar.chatapp.Adapter.PostAdapter;
-import com.example.satenderkumar.chatapp.Model.Post;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +42,6 @@ public class PostDetailFragment extends Fragment {
         postid = prefs.getString("postid", "none");
 
 
-
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -63,7 +59,7 @@ public class PostDetailFragment extends Fragment {
         return view;
     }
 
-    private void readPost(){
+    private void readPost() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts").child(postid);
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {

@@ -1,46 +1,10 @@
 package com.example.satenderkumar.chatapp.Fragment;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.example.satenderkumar.chatapp.Post_detail_intent;
-import com.example.satenderkumar.chatapp.R;
-
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.widget.ProgressBar;
-
-import com.example.satenderkumar.chatapp.RegisterActivity;
-import com.google.android.gms.flags.impl.DataUtils;
-import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Marker;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.example.satenderkumar.chatapp.Adapter.PostAdapter;
-import com.example.satenderkumar.chatapp.Model.Post;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -55,7 +19,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
+import com.example.satenderkumar.chatapp.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -65,11 +31,19 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.example.satenderkumar.chatapp.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -77,15 +51,23 @@ import static android.content.Context.MODE_PRIVATE;
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 
-
     public GoogleMap map;
-    FusedLocationProviderClient mFusedLocationClient;
     protected Context context;
+    FusedLocationProviderClient mFusedLocationClient;
     int PERMISSION_ID = 44;
     Marker marker;
 
     Map postdetails;
+    private final LocationCallback mLocationCallback = new LocationCallback() {
 
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+            LatLng Here = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            map.addMarker(new MarkerOptions().position(Here).title("You are here"));
+            map.moveCamera(CameraUpdateFactory.newLatLng(Here));
+        }
+    };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -113,16 +95,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public boolean  onMarkerClick( Marker marker) {
+            public boolean onMarkerClick(Marker marker) {
 
-                    String postid = (String)(marker.getTag());
-                    if(postid!=null){
-                        SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
-                        editor.putString("postid", postid);
-                        editor.apply();
+                String postid = (String) (marker.getTag());
+                if (postid != null) {
+                    SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+                    editor.putString("postid", postid);
+                    editor.apply();
 
-                        ((FragmentActivity)getContext()).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                new PostDetailFragment()).commit();
+                    ((FragmentActivity) getContext()).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            new PostDetailFragment()).commit();
                     return true;
                 }
 
@@ -133,7 +115,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    private void getAllLocation(){
+    private void getAllLocation() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
 
         reference.addListenerForSingleValueEvent(
@@ -141,9 +123,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         //Get map of users in datasnapshot
-                        collectLocation((Map<String,Object>) dataSnapshot.getValue());
+                        collectLocation((Map<String, Object>) dataSnapshot.getValue());
 
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         //handle databaseError
@@ -151,22 +134,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 });
 
 
-
     }
 
-    private void collectLocation(Map<String,Object> posts) {
+    private void collectLocation(Map<String, Object> posts) {
 
 
         //iterate through each user, ignoring their UID
-        for (Map.Entry<String, Object> entry : posts.entrySet()){
+        for (Map.Entry<String, Object> entry : posts.entrySet()) {
 
             //Get user map
             Map postdetails = (Map) entry.getValue();
-            Map location = (Map)postdetails.get("location");
+            Map location = (Map) postdetails.get("location");
             //Get phone field and append to list
             //location_all.add((Long) singleUser.get("latitude"));
-            if (location!=null){
-                LatLng Here = new LatLng((double)location.get("latitude"), (double)location.get("longitude"));
+            if (location != null) {
+                LatLng Here = new LatLng((double) location.get("latitude"), (double) location.get("longitude"));
                 Marker marker = map.addMarker(new MarkerOptions().position(Here).title("Post nearby")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                 marker.setTag(location.get("postid"));
@@ -229,17 +211,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
 
-    private LocationCallback mLocationCallback = new LocationCallback() {
-
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-            LatLng Here = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            map.addMarker(new MarkerOptions().position(Here).title("You are here"));
-            map.moveCamera(CameraUpdateFactory.newLatLng(Here));
-        }
-    };
-
     // method to check for permissions
     private boolean checkPermissions() {
         return ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
@@ -284,11 +255,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             getLastLocation();
         }
     }
-
-
-
-
-
 
 
 }

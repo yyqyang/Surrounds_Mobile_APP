@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.example.satenderkumar.chatapp.MainActivity;
+import com.example.satenderkumar.chatapp.Model.Comment;
+import com.example.satenderkumar.chatapp.Model.User;
+import com.example.satenderkumar.chatapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,22 +28,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.example.satenderkumar.chatapp.MainActivity;
-import com.example.satenderkumar.chatapp.Model.Comment;
-import com.example.satenderkumar.chatapp.Model.User;
-import com.example.satenderkumar.chatapp.R;
 
 import java.util.List;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ImageViewHolder> {
 
-    private Context mContext;
-    private List<Comment> mComment;
-    private String postid;
+    private final Context mContext;
+    private final List<Comment> mComment;
+    private final String postid;
 
     private FirebaseUser firebaseUser;
 
-    public CommentAdapter(Context context, List<Comment> comments, String postid){
+    public CommentAdapter(Context context, List<Comment> comments, String postid) {
         mContext = context;
         mComment = comments;
         this.postid = postid;
@@ -100,7 +101,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ImageVie
                                             .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()){
+                                            if (task.isSuccessful()) {
                                                 Toast.makeText(mContext, "Deleted!", Toast.LENGTH_SHORT).show();
                                             }
                                         }
@@ -121,21 +122,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ImageVie
         return mComment.size();
     }
 
-    public class ImageViewHolder extends RecyclerView.ViewHolder {
-
-        public ImageView image_profile;
-        public TextView username, comment;
-
-        public ImageViewHolder(View itemView) {
-            super(itemView);
-
-            image_profile = itemView.findViewById(R.id.image_profile);
-            username = itemView.findViewById(R.id.username);
-            comment = itemView.findViewById(R.id.comment);
-        }
-    }
-
-    private void getUserInfo(final ImageView imageView, final TextView username, String publisherid){
+    private void getUserInfo(final ImageView imageView, final TextView username, String publisherid) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child("Users").child(publisherid);
 
@@ -152,5 +139,19 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ImageVie
 
             }
         });
+    }
+
+    public class ImageViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageView image_profile;
+        public TextView username, comment;
+
+        public ImageViewHolder(View itemView) {
+            super(itemView);
+
+            image_profile = itemView.findViewById(R.id.image_profile);
+            username = itemView.findViewById(R.id.username);
+            comment = itemView.findViewById(R.id.comment);
+        }
     }
 }

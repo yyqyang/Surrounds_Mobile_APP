@@ -1,19 +1,20 @@
 package com.example.satenderkumar.chatapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.fragment.app.Fragment;
+import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.google.firebase.auth.FirebaseAuth;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import com.example.satenderkumar.chatapp.Fragment.HomeFragment;
 import com.example.satenderkumar.chatapp.Fragment.NotificationFragment;
 import com.example.satenderkumar.chatapp.Fragment.ProfileFragment;
 import com.example.satenderkumar.chatapp.Fragment.SearchFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 

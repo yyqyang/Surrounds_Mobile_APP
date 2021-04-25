@@ -2,27 +2,28 @@ package com.example.satenderkumar.chatapp.Adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.example.satenderkumar.chatapp.Fragment.PostDetailFragment;
 import com.example.satenderkumar.chatapp.Fragment.ProfileFragment;
 import com.example.satenderkumar.chatapp.Model.Notification;
 import com.example.satenderkumar.chatapp.Model.Post;
 import com.example.satenderkumar.chatapp.Model.User;
 import com.example.satenderkumar.chatapp.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -30,10 +31,10 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ImageViewHolder> {
 
-    private Context mContext;
-    private List<Notification> mNotification;
+    private final Context mContext;
+    private final List<Notification> mNotification;
 
-    public NotificationAdapter(Context context, List<Notification> notification){
+    public NotificationAdapter(Context context, List<Notification> notification) {
         mContext = context;
         mNotification = notification;
     }
@@ -69,44 +70,29 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     editor.putString("postid", notification.getPostid());
                     editor.apply();
 
-                    ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             new PostDetailFragment()).commit();
                 } else {
                     SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", MODE_PRIVATE).edit();
                     editor.putString("profileid", notification.getUserid());
                     editor.apply();
 
-                    ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             new ProfileFragment()).commit();
                 }
             }
         });
 
 
-
     }
+
     //
     @Override
     public int getItemCount() {
         return mNotification.size();
     }
 
-    public class ImageViewHolder extends RecyclerView.ViewHolder {
-
-        public ImageView image_profile, post_image;
-        public TextView username, text;
-
-        public ImageViewHolder(View itemView) {
-            super(itemView);
-
-            image_profile = itemView.findViewById(R.id.image_profile);
-            post_image = itemView.findViewById(R.id.post_image);
-            username = itemView.findViewById(R.id.username);
-            text = itemView.findViewById(R.id.comment);
-        }
-    }
-
-    private void getUserInfo(final ImageView imageView, final TextView username, String publisherid){
+    private void getUserInfo(final ImageView imageView, final TextView username, String publisherid) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child("Users").child(publisherid);
 
@@ -125,7 +111,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         });
     }
 
-    private void getPostImage(final ImageView post_image, String postid){
+    private void getPostImage(final ImageView post_image, String postid) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child("Posts").child(postid);
 
@@ -141,5 +127,20 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
             }
         });
+    }
+
+    public class ImageViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageView image_profile, post_image;
+        public TextView username, text;
+
+        public ImageViewHolder(View itemView) {
+            super(itemView);
+
+            image_profile = itemView.findViewById(R.id.image_profile);
+            post_image = itemView.findViewById(R.id.post_image);
+            username = itemView.findViewById(R.id.username);
+            text = itemView.findViewById(R.id.comment);
+        }
     }
 }
